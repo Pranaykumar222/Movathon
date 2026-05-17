@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  habits Habit[]
+  goals  Goal[]
+
+  @@map("users")
+}
+
+model Habit {
+  id        String   @id @default(cuid())
+  title     String
+  color     String   @default("#22c55e")
+  type      HabitType @default(YES_NO)
+  target    Float?
+  unit      String?
+  frequency Int[]    @default([0, 1, 2, 3, 4, 5, 6])
+  userId    String
+  goalId    String?
+  createdAt DateTime @default(now())
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal    Goal?        @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  entries HabitEntry[]
+
+  @@map("habits")
+}
+
+model HabitEntry {
+  id                   String   @id @default(cuid())
+  habitId              String
+  date                 String   // stored as "YYYY-MM-DD" string for easy querying
+  completed            Boolean  @default(false)
+  completionPercentage Float    @default(0)
+  value                Float?
+  note                 String?
+  createdAt            DateTime @default(now())
+
+  habit Habit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date]) // one entry per habit per day
+  @@map("habit_entries")
+}
+
+model Goal {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  target      Float?
+  unit        String?
+  userId      String
+  createdAt   DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habits Habit[]
+
+  @@map("goals")
+}
+
+enum HabitType {
+  YES_NO
+  NUMBER
+  TIME
+}
