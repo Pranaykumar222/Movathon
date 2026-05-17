@@ -1,3 +1,5 @@
+const stripTrailingSlash = (value) => value?.replace(/\/+$/, "");
+
 // Validates that required environment variables exist at startup.
 // The app crashes immediately with a clear error instead of later with a cryptic one.
 const requiredEnvVars = ["DATABASE_URL", "JWT_SECRET", "PORT"];
@@ -14,6 +16,6 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || "development",
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
+  clientUrl: stripTrailingSlash(process.env.CLIENT_URL) || "http://localhost:5173",
   isDev: process.env.NODE_ENV === "development",
 };
