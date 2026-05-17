@@ -67,4 +67,10 @@ Render backend:
 - Start command: `npm start`
 - Health check path: `/health`
 
+Before using auth on a fresh database, run this once from the Render Shell:
+
+```sh
+npm run db:deploy
+```
+
 After the backend URL is live, update `VITE_API_URL` in Vercel and redeploy the frontend. After the frontend URL is live, update `CLIENT_URL` in Render and redeploy the backend.

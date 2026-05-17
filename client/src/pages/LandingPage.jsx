@@ -3,7 +3,6 @@ import { ArrowRight, Flame, Target, Sparkles, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../components/Logo";
-import ThemeToggle from "../components/ThemeToggle";
 
 const LandingPage = () => {
   const { user } = useAuth();
@@ -18,7 +17,6 @@ const LandingPage = () => {
             <span className="font-bold text-lg text-black dark:text-white tracking-tight">Movathon</span>
           </div>
           <div className="flex items-center gap-4">
-            <ThemeToggle />
             {user ? (
               <Link to="/dashboard">
                 <Button className="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold">
@@ -53,7 +51,7 @@ const LandingPage = () => {
               <Sparkles className="w-4 h-4" /> The premier consistency tracker
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-black text-black dark:text-white tracking-tight mb-8 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-black dark:text-white tracking-tight mb-8 leading-[1.1]">
               Master your habits.<br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-lime-500 dark:from-emerald-400 dark:to-lime-300">
                 Prove your consistency.
@@ -65,8 +63,8 @@ const LandingPage = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to={user ? "/dashboard" : "/register"}>
-                <Button className="bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-lg h-14 px-8 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)]">
+              <Link to={user ? "/dashboard" : "/register"} className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-lg h-14 px-8 rounded-full shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(16,185,129,0.4)]">
                   {user ? "Open Dashboard" : "Start Tracking for Free"}
                 </Button>
               </Link>
@@ -79,7 +77,7 @@ const LandingPage = () => {
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-black dark:text-white mb-4">Built for people who get things done</h2>
-              <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto">Everything you need to stay on track, wrapped in a beautiful, premium interface.</p>
+              <p className="text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto text-sm sm:text-base">Everything you need to stay on track, wrapped in a beautiful, premium interface.</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">

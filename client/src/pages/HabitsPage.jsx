@@ -123,9 +123,9 @@ const HabitsPage = () => {
         {/* Header */}
         <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-emerald-400 mb-2 font-semibold">Daily system</p>
-            <h1 className="text-3xl font-semibold text-white">Habits</h1>
-            <p className="text-zinc-400 text-sm mt-1">
+            <p className="text-xs uppercase tracking-[0.22em] text-emerald-500 dark:text-emerald-400 mb-2 font-semibold">Daily system</p>
+            <h1 className="text-3xl font-semibold text-black dark:text-white">Habits</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">
               Set the inputs that paint your consistency grid.
             </p>
           </div>
@@ -143,14 +143,14 @@ const HabitsPage = () => {
             <div className="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : habits.length === 0 ? (
-          <Card className="bg-zinc-950/40 border-zinc-800/50 relative overflow-hidden backdrop-blur-sm">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-zinc-900/0 to-zinc-900/0 pointer-events-none" />
+          <Card className="bg-zinc-50/80 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800/50 relative overflow-hidden backdrop-blur-sm">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-100/50 dark:from-emerald-900/20 via-zinc-900/0 to-zinc-900/0 pointer-events-none" />
             <CardContent className="relative flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800/80 shadow-xl flex items-center justify-center mb-5">
-                <Flame className="w-8 h-8 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 shadow-xl flex items-center justify-center mb-5">
+                <Flame className="w-8 h-8 text-emerald-500 dark:text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
               </div>
-              <p className="text-zinc-200 font-medium text-lg">No habits yet</p>
-              <p className="text-zinc-500 text-sm mt-2 max-w-sm mx-auto">Create your first habit to start painting your daily consistency grid.</p>
+              <p className="text-zinc-900 dark:text-zinc-200 font-medium text-lg">No habits yet</p>
+              <p className="text-zinc-500 dark:text-zinc-500 text-sm mt-2 max-w-sm mx-auto">Create your first habit to start painting your daily consistency grid.</p>
               <Button onClick={openCreate} className="mt-6 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 gap-2 shadow-lg font-medium transition-transform hover:scale-105">
                 <Plus className="w-4 h-4" /> Create habit
               </Button>
@@ -159,11 +159,11 @@ const HabitsPage = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {habits.map((habit) => (
-              <Card key={habit.id} className="group relative overflow-hidden bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700/80 backdrop-blur-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+              <Card key={habit.id} className="group relative overflow-hidden bg-white/60 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700/80 backdrop-blur-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <CardContent className="relative flex flex-col gap-4 p-5">
                   <div className="flex items-start justify-between">
-                    <div className="w-12 h-12 rounded-xl border border-zinc-800/80 bg-zinc-950/80 flex items-center justify-center shrink-0 shadow-inner">
+                    <div className="w-12 h-12 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-950/80 flex items-center justify-center shrink-0 shadow-inner">
                       {habit.type === "NUMBER" && <Hash className="w-5 h-5 text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.5)]" />}
                       {habit.type === "TIME" && <Clock className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />}
                       {habit.type === "YES_NO" && <CheckCircle2 className="w-5 h-5 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" />}
@@ -180,10 +180,10 @@ const HabitsPage = () => {
                   <div className="min-w-0 mt-1">
                     <div className="flex items-center gap-2 mb-1.5">
                       <div className="w-3 h-3 rounded-full shrink-0 shadow-[0_0_8px_currentColor] opacity-80" style={{ backgroundColor: habit.color, color: habit.color }} />
-                      <p className="text-white font-medium text-base truncate">{habit.title}</p>
+                      <p className="text-black dark:text-white font-medium text-base truncate">{habit.title}</p>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-zinc-400 text-sm font-medium">{formatHabitType(habit)}</span>
+                      <span className="text-zinc-600 dark:text-zinc-400 text-sm font-medium">{formatHabitType(habit)}</span>
                       <span className="text-zinc-500 text-xs font-medium">{formatFrequency(habit.frequency)}</span>
                       {habit.goal && <span className="text-zinc-500 text-xs flex items-center gap-1 mt-1"><Target className="w-3 h-3" /> Linked to {habit.goal.title}</span>}
                     </div>
@@ -197,7 +197,7 @@ const HabitsPage = () => {
 
       {/* Create / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+        <DialogContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
           <DialogHeader>
             <DialogTitle>{editingHabit ? "Edit habit" : "New habit"}</DialogTitle>
             <DialogDescription>
@@ -206,17 +206,17 @@ const HabitsPage = () => {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Habit name</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Habit name</Label>
               <Input
                 placeholder="e.g. Gym, 10k steps, Deep work"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-green-500"
+                className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-green-500"
                 onKeyDown={(e) => e.key === "Enter" && handleSave()}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Color</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Color</Label>
               <div className="flex gap-2 flex-wrap">
                 {HABIT_COLORS.map((color) => (
                   <button
@@ -231,7 +231,7 @@ const HabitsPage = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-zinc-300">How do you measure it?</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">How do you measure it?</Label>
               <div className="grid gap-2">
                 {HABIT_TYPES.map((type) => (
                   <button
@@ -245,11 +245,11 @@ const HabitsPage = () => {
                     })}
                     className={`rounded-md border p-3 text-left transition-colors ${
                       form.type === type.value
-                        ? "border-emerald-500/50 bg-emerald-500/10"
-                        : "border-zinc-800 bg-zinc-950/60 hover:border-zinc-700"
+                        ? "border-emerald-500/50 bg-emerald-50 dark:bg-emerald-500/10"
+                        : "border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/60 hover:border-zinc-300 dark:hover:border-zinc-700"
                     }`}
                   >
-                    <span className="text-sm font-medium text-white">{type.label}</span>
+                    <span className="text-sm font-medium text-black dark:text-white">{type.label}</span>
                     <span className="block text-xs text-zinc-500 mt-1">{type.helper}</span>
                   </button>
                 ))}
@@ -257,7 +257,7 @@ const HabitsPage = () => {
             </div>
             
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Repeat on</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Repeat on</Label>
               <div className="flex gap-2">
                 {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
                   <button
@@ -273,7 +273,7 @@ const HabitsPage = () => {
                         setForm({ ...form, frequency: [...freq, i].sort() });
                       }
                     }}
-                    className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${form.frequency?.includes(i) ? "bg-emerald-500 text-zinc-950" : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"}`}
+                    className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${form.frequency?.includes(i) ? "bg-emerald-500 text-white dark:text-zinc-950" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"}`}
                   >
                     {day}
                   </button>
@@ -283,33 +283,33 @@ const HabitsPage = () => {
             {form.type !== "YES_NO" && (
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label className="text-zinc-300">Daily target</Label>
+                  <Label className="text-zinc-600 dark:text-zinc-300">Daily target</Label>
                 <Input
                   type="number"
                   min="0"
                   placeholder={form.type === "TIME" ? "90" : "10000"}
                   value={form.target}
                   onChange={(e) => setForm({ ...form, target: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-green-500"
+                  className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-green-500"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-zinc-300">Measured in</Label>
+                <Label className="text-zinc-600 dark:text-zinc-300">Measured in</Label>
                 <Input
                   placeholder={form.type === "TIME" ? "minutes" : "steps"}
                   value={form.unit}
                   onChange={(e) => setForm({ ...form, unit: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-green-500"
+                  className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-green-500"
                 />
               </div>
               </div>
             )}
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Supports goal</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Supports goal</Label>
               <select
                 value={form.goalId}
                 onChange={(e) => setForm({ ...form, goalId: e.target.value })}
-                className="w-full h-9 rounded-md border border-zinc-700 bg-zinc-800 px-3 text-sm text-white"
+                className="w-full h-9 rounded-md border border-zinc-200 dark:border-zinc-700 bg-transparent dark:bg-zinc-800 px-3 text-sm text-black dark:text-white"
               >
                 <option value="">No goal</option>
                 {goals.map((goal) => (
@@ -327,7 +327,7 @@ const HabitsPage = () => {
             <Button
               variant="ghost"
               onClick={() => setDialogOpen(false)}
-              className="text-zinc-400 hover:text-white"
+              className="text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white"
             >
               Cancel
             </Button>

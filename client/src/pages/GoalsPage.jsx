@@ -100,9 +100,9 @@ const GoalsPage = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-emerald-400 mb-2 font-semibold">Long-term outcomes</p>
-            <h1 className="text-3xl font-semibold text-white">Goals</h1>
-            <p className="text-zinc-400 text-sm mt-1">Create the destination. Link daily habits as proof of progress.</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-emerald-500 dark:text-emerald-400 mb-2 font-semibold">Long-term outcomes</p>
+            <h1 className="text-3xl font-semibold text-black dark:text-white">Goals</h1>
+            <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Create the destination. Link daily habits as proof of progress.</p>
           </div>
           <Button onClick={openCreate} className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium shadow-[0_0_15px_rgba(16,185,129,0.3)] gap-2 transition-transform hover:scale-105">
             <Plus className="w-4 h-4" /> New goal
@@ -114,14 +114,14 @@ const GoalsPage = () => {
             <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : goals.length === 0 ? (
-          <Card className="bg-zinc-950/40 border-zinc-800/50 relative overflow-hidden backdrop-blur-sm">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-zinc-900/0 to-zinc-900/0 pointer-events-none" />
+          <Card className="bg-zinc-50/80 dark:bg-zinc-950/40 border-zinc-200 dark:border-zinc-800/50 relative overflow-hidden backdrop-blur-sm">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-100/50 dark:from-emerald-900/20 via-zinc-900/0 to-zinc-900/0 pointer-events-none" />
             <CardContent className="relative flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800/80 shadow-xl flex items-center justify-center mb-5">
+              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 shadow-xl flex items-center justify-center mb-5">
                 <Target className="w-8 h-8 text-emerald-500 drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
               </div>
-              <p className="text-zinc-200 font-medium text-lg">No goals yet</p>
-              <p className="text-zinc-500 text-sm mt-2 max-w-sm mx-auto">Create a goal like “Run 100km” and link daily habits to track your cumulative progress.</p>
+              <p className="text-zinc-900 dark:text-zinc-200 font-medium text-lg">No goals yet</p>
+              <p className="text-zinc-500 dark:text-zinc-500 text-sm mt-2 max-w-sm mx-auto">Create a goal like “Run 100km” and link daily habits to track your cumulative progress.</p>
               <Button onClick={openCreate} className="mt-6 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 gap-2 shadow-lg font-medium transition-transform hover:scale-105">
                 <Plus className="w-4 h-4" /> Create goal
               </Button>
@@ -132,25 +132,25 @@ const GoalsPage = () => {
             {goals.map((goal) => {
               const progress = calculateGoalProgress(goal);
               return (
-                <Card key={goal.id} className="group relative overflow-hidden bg-zinc-900/40 border-zinc-800/60 hover:border-zinc-700/80 backdrop-blur-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                <Card key={goal.id} className="group relative overflow-hidden bg-white/60 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700/80 backdrop-blur-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="relative py-6 px-5">
                     <div className="flex items-start gap-5">
-                      <div className="w-14 h-14 rounded-xl bg-zinc-950/80 border border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
-                        <Target className="w-6 h-6 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]" />
+                      <div className="w-14 h-14 rounded-xl bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
+                        <Target className="w-6 h-6 text-amber-500 dark:text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2 mb-1">
-                          <p className="text-white font-semibold text-lg truncate pr-2">{goal.title}</p>
+                          <p className="text-black dark:text-white font-semibold text-lg truncate pr-2">{goal.title}</p>
                           <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/10 shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.1)]">{progress}%</Badge>
                         </div>
-                        {goal.description && <p className="text-zinc-400 text-sm mt-1 leading-relaxed line-clamp-2">{goal.description}</p>}
+                        {goal.description && <p className="text-zinc-600 dark:text-zinc-400 text-sm mt-1 leading-relaxed line-clamp-2">{goal.description}</p>}
                         
                         {goal.target && (
                           <p className="text-xs text-zinc-500 mt-2 font-medium">Target: {goal.target} {goal.unit}</p>
                         )}
                         
-                        <div className="mt-5 h-2.5 rounded-full bg-zinc-950 border border-zinc-800 overflow-hidden shadow-inner relative">
+                        <div className="mt-5 h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 overflow-hidden shadow-inner relative">
                           <div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-600 to-emerald-400 rounded-full transition-all duration-1000" style={{ width: `${progress}%` }}>
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent w-full -translate-x-full animate-[shimmer_2s_infinite]" />
                           </div>
@@ -180,7 +180,7 @@ const GoalsPage = () => {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+        <DialogContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
           <DialogHeader>
             <DialogTitle>{editingGoal ? "Edit goal" : "New goal"}</DialogTitle>
             <DialogDescription>
@@ -189,55 +189,55 @@ const GoalsPage = () => {
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Outcome</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Outcome</Label>
               <Input
                 placeholder="e.g. Lose 5kg, Become consistent at coding"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-green-500"
+                className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-green-500"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-zinc-300">Why it matters</Label>
+              <Label className="text-zinc-600 dark:text-zinc-300">Why it matters</Label>
               <textarea
                 rows={3}
                 placeholder="A short reason that will still make sense 30 days from now"
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full rounded-md border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-md border border-zinc-200 dark:border-zinc-700 bg-transparent dark:bg-zinc-800 px-3 py-2 text-sm text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-emerald-500 focus:outline-none"
               />
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
               <div className="space-y-1.5">
-                <Label className="text-zinc-300">Target (Optional)</Label>
+                <Label className="text-zinc-600 dark:text-zinc-300">Target (Optional)</Label>
                 <Input
                   type="number"
                   min="0"
                   placeholder="e.g. 100"
                   value={form.target}
                   onChange={(e) => setForm({ ...form, target: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-emerald-500"
+                  className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-emerald-500"
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-zinc-300">Measured in</Label>
+                <Label className="text-zinc-600 dark:text-zinc-300">Measured in</Label>
                 <Input
                   placeholder="e.g. km, books"
                   value={form.unit}
                   onChange={(e) => setForm({ ...form, unit: e.target.value })}
-                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 focus:border-emerald-500"
+                  className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:border-emerald-500"
                 />
               </div>
             </div>
 
-            <div className="rounded-md border border-zinc-800 bg-zinc-950/70 p-3">
-              <p className="text-sm text-zinc-300">Progress comes from linked habits.</p>
+            <div className="rounded-md border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/70 p-3">
+              <p className="text-sm text-zinc-700 dark:text-zinc-300">Progress comes from linked habits.</p>
               <p className="text-xs text-zinc-500 mt-1">Example: “Lose 5kg” can be powered by Gym, 10k steps, and Sleep 8h.</p>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setDialogOpen(false)} className="text-zinc-400 hover:text-white">
+            <Button variant="ghost" onClick={() => setDialogOpen(false)} className="text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white">
               Cancel
             </Button>
             <Button onClick={handleSave} disabled={saving} className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium">

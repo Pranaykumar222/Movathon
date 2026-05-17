@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Logo from "../components/Logo";
 import UserSearch from "../components/UserSearch";
-import ThemeToggle from "../components/ThemeToggle";
 
 const AppLayout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -26,7 +25,7 @@ const AppLayout = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#f0fdf4_0%,#f8fafc_34%,#ffffff_100%)] dark:bg-[linear-gradient(180deg,#06110b_0%,#09090b_34%,#0a0a0a_100%)] text-zinc-900 dark:text-zinc-100 transition-colors">
+    <div className="min-h-screen pb-16 md:pb-0 bg-[linear-gradient(180deg,#f0fdf4_0%,#f8fafc_34%,#ffffff_100%)] dark:bg-[linear-gradient(180deg,#06110b_0%,#09090b_34%,#0a0a0a_100%)] text-zinc-900 dark:text-zinc-100 transition-colors">
       {/* Navbar */}
       <nav className="border-b border-zinc-200 dark:border-zinc-800/80 bg-white/75 dark:bg-zinc-950/75 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
@@ -59,7 +58,6 @@ const AppLayout = ({ children }) => {
 
           {/* User + Logout */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle />
             <span className="hidden sm:inline text-sm text-zinc-500 dark:text-zinc-400">
               @{user?.username}
             </span>
@@ -79,6 +77,26 @@ const AppLayout = ({ children }) => {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {children}
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t border-zinc-200 dark:border-zinc-800/80 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl z-50 pb-safe">
+        <div className="flex items-center justify-around h-16 px-2">
+          {navItems.map(({ to, label, icon: Icon }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`flex flex-col items-center justify-center gap-1 w-full h-full transition-colors ${
+                location.pathname === to
+                  ? "text-emerald-600 dark:text-lime-400"
+                  : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-[10px] font-medium">{label}</span>
+            </Link>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 };

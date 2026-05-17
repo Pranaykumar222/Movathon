@@ -134,7 +134,7 @@ const DashboardPage = () => {
         </div>
 
         {/* MAIN SPLIT LAYOUT */}
-        <div className="grid lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-8 items-start">
 
           {/* LEFT COLUMN: TASKS / HABITS */}
           <div className="space-y-6">
@@ -162,9 +162,9 @@ const DashboardPage = () => {
                       const percentage = entry.completionPercentage ?? 0;
                       return (
                         <div key={habit.id} className="group relative rounded-xl border border-zinc-200 dark:border-zinc-800/60 bg-zinc-50/50 dark:bg-zinc-900/40 p-4 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/40 hover:border-zinc-300 dark:hover:border-zinc-700/60">
-                          <div className="flex items-start justify-between gap-4">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 
-                            <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div className="flex items-start gap-3 w-full sm:w-auto flex-1 min-w-0">
                               <div className="w-3 h-3 rounded-full mt-1.5 shrink-0 shadow-sm" style={{ backgroundColor: habit.color, boxShadow: `0 0 10px ${habit.color}60` }} />
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
@@ -181,7 +181,7 @@ const DashboardPage = () => {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex shrink-0 items-center gap-2">
+                            <div className="flex w-full sm:w-auto shrink-0 items-center justify-end gap-2 mt-2 sm:mt-0">
                               {habit.type === "YES_NO" ? (
                                 <>
                                   {percentage >= 100 && (
@@ -270,18 +270,18 @@ const DashboardPage = () => {
             <section className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-[linear-gradient(145deg,#0a1510_0%,#111915_100%)] p-6 shadow-2xl">
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
 
-              <div className="relative z-10 flex flex-col items-center text-center gap-4">
+              <div className="relative z-10 flex flex-col sm:flex-row items-center text-center sm:text-left gap-6">
                 <ScoreRing value={todaySummary.completionScore} />
-                <div>
-                  <h1 className="text-2xl font-bold text-white tracking-tight">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                     Good {getGreeting()}, {user?.username}
                   </h1>
-                  <p className="text-zinc-300 dark:text-zinc-400 mt-2 text-sm max-w-sm mx-auto mb-4">
+                  <p className="text-zinc-300 dark:text-zinc-400 mt-2 text-sm max-w-sm mx-auto sm:mx-0 mb-4">
                     Log the real work. Movathon turns it into your daily consistency score.
                   </p>
                   <Button
                     onClick={() => setShareOpen(true)}
-                    className="bg-black/50 dark:bg-zinc-900/50 hover:bg-black/70 dark:hover:bg-zinc-800 text-emerald-400 border border-emerald-500/30 backdrop-blur-sm gap-2 transition-colors"
+                    className="w-full sm:w-auto bg-black/50 dark:bg-zinc-900/50 hover:bg-black/70 dark:hover:bg-zinc-800 text-emerald-400 border border-emerald-500/30 backdrop-blur-sm gap-2 transition-colors"
                   >
                     <Share2 className="w-4 h-4" /> Share Progress
                   </Button>
@@ -298,7 +298,7 @@ const DashboardPage = () => {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="pt-6 pb-6 overflow-x-auto custom-scrollbar">
+              <CardContent className="pt-6 pb-6 overflow-x-auto w-full custom-scrollbar">
                 {heatmapData.length === 0 ? (
                   <div className="py-8 text-center">
                     <p className="text-zinc-500 text-sm">No activity yet. Log a habit to paint the grid.</p>
