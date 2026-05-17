@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import html2canvas from "html2canvas";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Download, Share2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -66,6 +66,9 @@ const ShareModal = ({ open, onOpenChange, username, streak, consistency, type, h
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5 text-emerald-400" /> Share your progress
           </DialogTitle>
+          <DialogDescription>
+            Preview and save a story-sized image of your current Movathon progress.
+          </DialogDescription>
         </DialogHeader>
         
         <div className="flex flex-col items-center justify-center py-4 overflow-hidden">

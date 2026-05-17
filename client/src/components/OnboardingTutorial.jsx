@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Activity, Flame, Target, Sparkles, Check, ChevronRight } from "lucide-react";
 import Logo from "./Logo";
@@ -61,6 +61,10 @@ const OnboardingTutorial = () => {
   return (
     <Dialog open={open} onOpenChange={handleComplete}>
       <DialogContent className="bg-zinc-950 border-zinc-800 text-white sm:max-w-md [&>button]:hidden outline-none">
+        <DialogTitle className="sr-only">{steps[currentStep].title}</DialogTitle>
+        <DialogDescription className="sr-only">
+          {steps[currentStep].description}
+        </DialogDescription>
         <div className="flex flex-col items-center text-center p-6 space-y-6">
           
           <div className="w-20 h-20 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center relative shadow-2xl">

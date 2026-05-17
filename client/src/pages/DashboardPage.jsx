@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { CalendarCheck, Check, Flame, Pencil, Sparkles, Target, Trophy, TrendingDown, TrendingUp, X, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
@@ -319,6 +319,9 @@ const DashboardPage = () => {
         <DialogContent className="bg-zinc-950 border-zinc-800 text-white">
           <DialogHeader>
             <DialogTitle>{editingHabit?.title}</DialogTitle>
+            <DialogDescription>
+              Log today&apos;s progress and add a note for this habit.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             {editingHabit?.type === "YES_NO" ? (

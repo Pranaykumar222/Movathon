@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter,
 } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2, Flame, Target, CheckCircle2, Hash, Clock } from "lucide-react";
 import { toast } from "sonner";
@@ -200,6 +200,9 @@ const HabitsPage = () => {
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
           <DialogHeader>
             <DialogTitle>{editingHabit ? "Edit habit" : "New habit"}</DialogTitle>
+            <DialogDescription>
+              Set up how this habit is measured, scheduled, and connected to your goals.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">

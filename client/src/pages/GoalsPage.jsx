@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Target, Plus, Pencil, Trash2, Link2 } from "lucide-react";
 import { toast } from "sonner";
@@ -183,6 +183,9 @@ const GoalsPage = () => {
         <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
           <DialogHeader>
             <DialogTitle>{editingGoal ? "Edit goal" : "New goal"}</DialogTitle>
+            <DialogDescription>
+              Define the outcome you want your habits to support.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
