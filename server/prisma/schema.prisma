@@ -28,6 +28,9 @@ model Habit {
   target    Float?
   unit      String?
   frequency Int[]    @default([0, 1, 2, 3, 4, 5, 6])
+  scheduleType String @default("WEEKLY")
+  oneTimeDate  String?
+  scheduledTime String?
   userId    String
   goalId    String?
   createdAt DateTime @default(now())

@@ -1,11 +1,21 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import { getMe } from "../api/auth";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    const cachedUser = localStorage.getItem("user");
+    if (!cachedUser) return null;
+    try {
+      return JSON.parse(cachedUser);
+    } catch {
+      localStorage.removeItem("user");
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -15,10 +25,9 @@ export const AuthProvider = ({ children }) => {
         .catch(() => {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+          setUser(null);
         })
         .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
     }
   }, []);
 

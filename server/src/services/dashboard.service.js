@@ -2,6 +2,10 @@ import prisma from "../lib/prisma.js";
 
 const STREAK_THRESHOLD = 70; // Completion % required to count toward streak
 const todayString = () => new Date().toISOString().split("T")[0];
+const isHabitScheduledForDate = (habit, date, dayOfWeek) => {
+  if (habit.scheduleType === "ONE_TIME") return habit.oneTimeDate === date;
+  return habit.frequency ? habit.frequency.includes(dayOfWeek) : true;
+};
 
 // Get all entries for a user grouped by date for the heatmap
 export const getHeatmapData = async (userId) => {
@@ -146,15 +150,15 @@ export const getStreakData = async (userId) => {
   };
 };
 
-export const getTodaySummary = async (userId) => {
-  const today = todayString();
-  const todayDayOfWeek = new Date().getDay();
+export const getTodaySummary = async (userId, options = {}) => {
+  const today = /^\d{4}-\d{2}-\d{2}$/.test(options.date || "") ? options.date : todayString();
+  const requestedDay = Number(options.dayOfWeek);
+  const todayDayOfWeek = Number.isInteger(requestedDay) && requestedDay >= 0 && requestedDay <= 6
+    ? requestedDay
+    : new Date(`${today}T00:00:00`).getDay();
   
   const habits = await prisma.habit.findMany({
-    where: { 
-      userId,
-      frequency: { has: todayDayOfWeek }
-    },
+    where: { userId },
     include: {
       goal: true,
       entries: {
@@ -165,12 +169,14 @@ export const getTodaySummary = async (userId) => {
     orderBy: { createdAt: "asc" },
   });
 
-  const totalHabits = habits.length;
-  const totalPercentage = habits.reduce((sum, habit) => (
+  const scheduledHabits = habits.filter((habit) => isHabitScheduledForDate(habit, today, todayDayOfWeek));
+
+  const totalHabits = scheduledHabits.length;
+  const totalPercentage = scheduledHabits.reduce((sum, habit) => (
     sum + (habit.entries[0]?.completionPercentage ?? 0)
   ), 0);
   const completionScore = totalHabits > 0 ? Math.round(totalPercentage / totalHabits) : 0;
-  const completedHabits = habits.filter((habit) => (habit.entries[0]?.completionPercentage ?? 0) >= 100).length;
+  const completedHabits = scheduledHabits.filter((habit) => (habit.entries[0]?.completionPercentage ?? 0) >= 100).length;
 
   return {
     date: today,
@@ -304,7 +310,7 @@ export const getWeeklyReview = async (userId) => {
     const dateObj = new Date(dateStr);
     const dayOfWeek = dateObj.getDay();
     
-    const scheduledHabits = habits.filter(h => h.frequency ? h.frequency.includes(dayOfWeek) : true);
+    const scheduledHabits = habits.filter(h => isHabitScheduledForDate(h, dateStr, dayOfWeek));
     
     if (scheduledHabits.length === 0) {
       return { date: dateStr, score: null, scheduled: 0, completed: 0 };
@@ -343,7 +349,7 @@ export const getWeeklyReview = async (userId) => {
     let skippedCount = 0;
     past7Days.forEach(dateStr => {
       const dayOfWeek = new Date(dateStr).getDay();
-      if (habit.frequency ? habit.frequency.includes(dayOfWeek) : true) {
+      if (isHabitScheduledForDate(habit, dateStr, dayOfWeek)) {
         const entry = habit.entries.find(e => e.date === dateStr);
         if (!entry || entry.completionPercentage === 0) {
           skippedCount++;

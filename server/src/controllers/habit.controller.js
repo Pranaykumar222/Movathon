@@ -3,8 +3,11 @@ import { sendSuccess } from "../utils/response.js";
 import { createError } from "../middleware/errorHandler.js";
 
 const HABIT_TYPES = ["YES_NO", "NUMBER", "TIME"];
+const SCHEDULE_TYPES = ["WEEKLY", "ONE_TIME"];
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const TIME_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-const sanitizeHabitData = ({ title, color, type, target, unit, goalId, frequency }, isUpdate = false) => {
+const sanitizeHabitData = ({ title, color, type, target, unit, goalId, frequency, scheduleType, oneTimeDate, scheduledTime }, isUpdate = false) => {
   const data = {};
 
   if (!isUpdate || title !== undefined) {
@@ -30,12 +33,43 @@ const sanitizeHabitData = ({ title, color, type, target, unit, goalId, frequency
   }
   if (unit !== undefined) data.unit = unit?.trim() || null;
   if (goalId !== undefined) data.goalId = goalId || null;
+
+  if (scheduleType !== undefined) {
+    if (!SCHEDULE_TYPES.includes(scheduleType)) {
+      throw createError("Schedule type must be WEEKLY or ONE_TIME.", 400);
+    }
+    data.scheduleType = scheduleType;
+  }
+
+  if (oneTimeDate !== undefined) {
+    if (oneTimeDate && !DATE_PATTERN.test(oneTimeDate)) {
+      throw createError("One-time date must use YYYY-MM-DD format.", 400);
+    }
+    data.oneTimeDate = oneTimeDate || null;
+  }
+
+  if (scheduledTime !== undefined) {
+    if (scheduledTime && !TIME_PATTERN.test(scheduledTime)) {
+      throw createError("Scheduled time must use HH:mm format.", 400);
+    }
+    data.scheduledTime = scheduledTime || null;
+  }
   
   if (frequency !== undefined) {
     if (!Array.isArray(frequency) || !frequency.every(d => Number.isInteger(d) && d >= 0 && d <= 6)) {
       throw createError("Frequency must be an array of days (0-6).", 400);
     }
     data.frequency = frequency;
+  }
+
+  const resolvedScheduleType = data.scheduleType || scheduleType;
+  if (resolvedScheduleType === "ONE_TIME" && !data.oneTimeDate && !isUpdate) {
+    throw createError("One-time habits need a date.", 400);
+  }
+
+  if (resolvedScheduleType === "WEEKLY") {
+    data.oneTimeDate = null;
+    data.scheduledTime = scheduledTime === undefined ? data.scheduledTime : data.scheduledTime;
   }
 
   return data;
@@ -107,6 +141,9 @@ export const updateHabit = async (req, res, next) => {
     });
 
     if (!existing) throw createError("Habit not found.", 404);
+    if (data.scheduleType === "ONE_TIME" && !data.oneTimeDate && !existing.oneTimeDate) {
+      throw createError("One-time habits need a date.", 400);
+    }
 
     const habit = await prisma.habit.update({
       where: { id },

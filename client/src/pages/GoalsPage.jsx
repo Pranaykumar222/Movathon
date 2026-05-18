@@ -98,13 +98,13 @@ const GoalsPage = () => {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-emerald-500 dark:text-emerald-400 mb-2 font-semibold">Long-term outcomes</p>
             <h1 className="text-3xl font-semibold text-black dark:text-white">Goals</h1>
             <p className="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Create the destination. Link daily habits as proof of progress.</p>
           </div>
-          <Button onClick={openCreate} className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium shadow-[0_0_15px_rgba(16,185,129,0.3)] gap-2 transition-transform hover:scale-105">
+          <Button onClick={openCreate} className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium shadow-[0_0_15px_rgba(16,185,129,0.3)] gap-2 transition-transform hover:scale-105">
             <Plus className="w-4 h-4" /> New goal
           </Button>
         </div>
@@ -135,7 +135,7 @@ const GoalsPage = () => {
                 <Card key={goal.id} className="group relative overflow-hidden bg-white/60 dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800/60 hover:border-zinc-300 dark:hover:border-zinc-700/80 backdrop-blur-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
                   <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <CardContent className="relative py-6 px-5">
-                    <div className="flex items-start gap-5">
+                    <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
                       <div className="w-14 h-14 rounded-xl bg-zinc-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800/50 flex items-center justify-center shrink-0 shadow-inner">
                         <Target className="w-6 h-6 text-amber-500 dark:text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]" />
                       </div>
@@ -155,16 +155,16 @@ const GoalsPage = () => {
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent w-full -translate-x-full animate-[shimmer_2s_infinite]" />
                           </div>
                         </div>
-                        <div className="mt-4 flex items-center justify-between">
+                        <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                           <p className="text-xs text-zinc-500 flex items-center gap-1.5 font-medium">
                             <Link2 className="w-3.5 h-3.5" />
                             {goal.habits?.length || 0} linked habit{goal.habits?.length === 1 ? "" : "s"}
                           </p>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Button variant="ghost" size="sm" onClick={() => openEdit(goal)} className="text-zinc-500 hover:text-white h-8 w-8 p-0 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-md transition-colors hover:bg-zinc-800">
+                          <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                            <Button variant="ghost" size="sm" onClick={() => openEdit(goal)} aria-label={`Edit ${goal.title}`} className="text-zinc-600 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-white h-8 w-8 p-0 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800/50 rounded-md transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800">
                               <Pencil className="w-3.5 h-3.5" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleDelete(goal.id)} className="text-zinc-500 hover:text-red-400 hover:bg-red-950/40 h-8 w-8 p-0 bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-md transition-colors">
+                            <Button variant="ghost" size="sm" onClick={() => handleDelete(goal.id)} aria-label={`Delete ${goal.title}`} className="text-zinc-600 hover:text-red-600 hover:bg-red-50 dark:text-zinc-300 dark:hover:text-red-400 dark:hover:bg-red-950/40 h-8 w-8 p-0 bg-white/80 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800/50 rounded-md transition-colors">
                               <Trash2 className="w-3.5 h-3.5" />
                             </Button>
                           </div>
@@ -180,7 +180,7 @@ const GoalsPage = () => {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
+        <DialogContent className="max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
           <DialogHeader>
             <DialogTitle>{editingGoal ? "Edit goal" : "New goal"}</DialogTitle>
             <DialogDescription>

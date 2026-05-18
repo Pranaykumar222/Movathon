@@ -12,6 +12,10 @@ import {
 import { Plus, Pencil, Trash2, Flame, Target, CheckCircle2, Hash, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { HABIT_COLORS, HABIT_TYPES } from "../utils/constants";
+import { getLocalDayOfWeek, toLocalDateString } from "../utils/date";
+
+const currentDayFrequency = () => [getLocalDayOfWeek()];
+const todayDate = () => toLocalDateString();
 
 const emptyForm = {
   title: "",
@@ -20,7 +24,10 @@ const emptyForm = {
   target: "",
   unit: "",
   goalId: "",
-  frequency: [0, 1, 2, 3, 4, 5, 6],
+  frequency: currentDayFrequency(),
+  scheduleType: "WEEKLY",
+  oneTimeDate: todayDate(),
+  scheduledTime: "",
 };
 
 const formatFrequency = (freq) => {
@@ -29,6 +36,24 @@ const formatFrequency = (freq) => {
   if (freq.length === 2 && [0,6].every(d => freq.includes(d))) return "Weekends";
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return freq.map(d => days[d]).join(", ");
+};
+
+const formatSchedule = (habit) => {
+  if (habit.scheduleType === "ONE_TIME") {
+    const date = habit.oneTimeDate ? new Date(`${habit.oneTimeDate}T00:00:00`) : null;
+    const dateLabel = date
+      ? date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+      : "One day";
+    return `${dateLabel}${habit.scheduledTime ? ` at ${formatTime(habit.scheduledTime)}` : ""}`;
+  }
+  return formatFrequency(habit.frequency);
+};
+
+const formatTime = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 };
 
 const HabitsPage = () => {
@@ -58,7 +83,7 @@ const HabitsPage = () => {
 
   const openCreate = () => {
     setEditingHabit(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, frequency: currentDayFrequency(), oneTimeDate: todayDate() });
     setDialogOpen(true);
   };
 
@@ -72,6 +97,9 @@ const HabitsPage = () => {
       unit: habit.unit ?? "",
       goalId: habit.goalId ?? "",
       frequency: habit.frequency || [0, 1, 2, 3, 4, 5, 6],
+      scheduleType: habit.scheduleType || "WEEKLY",
+      oneTimeDate: habit.oneTimeDate || todayDate(),
+      scheduledTime: habit.scheduledTime || "",
     });
     setDialogOpen(true);
   };
@@ -82,12 +110,19 @@ const HabitsPage = () => {
       toast.error("Add a daily target so Movathon can calculate completion");
       return;
     }
+    if (form.scheduleType === "ONE_TIME" && !form.oneTimeDate) {
+      toast.error("Pick the date for this one-day task");
+      return;
+    }
     setSaving(true);
     const payload = {
       ...form,
       target: form.target === "" ? null : Number(form.target),
       unit: form.unit.trim() || null,
       goalId: form.goalId || null,
+      frequency: form.scheduleType === "WEEKLY" ? form.frequency : [],
+      oneTimeDate: form.scheduleType === "ONE_TIME" ? form.oneTimeDate : null,
+      scheduledTime: form.scheduledTime || null,
     };
     try {
       if (editingHabit) {
@@ -121,7 +156,7 @@ const HabitsPage = () => {
     <AppLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-emerald-500 dark:text-emerald-400 mb-2 font-semibold">Daily system</p>
             <h1 className="text-3xl font-semibold text-black dark:text-white">Habits</h1>
@@ -131,7 +166,7 @@ const HabitsPage = () => {
           </div>
           <Button
             onClick={openCreate}
-            className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium shadow-[0_0_15px_rgba(16,185,129,0.3)] gap-2 transition-transform hover:scale-105"
+            className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-medium shadow-[0_0_15px_rgba(16,185,129,0.3)] gap-2 transition-transform hover:scale-105"
           >
             <Plus className="w-4 h-4" /> New habit
           </Button>
@@ -168,11 +203,11 @@ const HabitsPage = () => {
                       {habit.type === "TIME" && <Clock className="w-5 h-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]" />}
                       {habit.type === "YES_NO" && <CheckCircle2 className="w-5 h-5 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]" />}
                     </div>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Button variant="ghost" size="sm" onClick={() => openEdit(habit)} className="text-zinc-500 hover:text-white h-8 w-8 p-0 bg-zinc-950/50 backdrop-blur-sm border border-zinc-800/50 rounded-md">
+                    <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                      <Button variant="ghost" size="sm" onClick={() => openEdit(habit)} aria-label={`Edit ${habit.title}`} className="text-zinc-600 hover:text-zinc-950 dark:text-zinc-300 dark:hover:text-white h-8 w-8 p-0 bg-white/80 dark:bg-zinc-950/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800/50 rounded-md">
                         <Pencil className="w-3.5 h-3.5" />
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => handleDelete(habit.id)} className="text-zinc-500 hover:text-red-400 hover:bg-red-950/30 h-8 w-8 p-0 bg-zinc-950/50 backdrop-blur-sm border border-zinc-800/50 rounded-md">
+                      <Button variant="ghost" size="sm" onClick={() => handleDelete(habit.id)} aria-label={`Delete ${habit.title}`} className="text-zinc-600 hover:text-red-600 hover:bg-red-50 dark:text-zinc-300 dark:hover:text-red-400 dark:hover:bg-red-950/30 h-8 w-8 p-0 bg-white/80 dark:bg-zinc-950/50 backdrop-blur-sm border border-zinc-200 dark:border-zinc-800/50 rounded-md">
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
@@ -184,7 +219,7 @@ const HabitsPage = () => {
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className="text-zinc-600 dark:text-zinc-400 text-sm font-medium">{formatHabitType(habit)}</span>
-                      <span className="text-zinc-500 text-xs font-medium">{formatFrequency(habit.frequency)}</span>
+                      <span className="text-zinc-500 text-xs font-medium">{formatSchedule(habit)}</span>
                       {habit.goal && <span className="text-zinc-500 text-xs flex items-center gap-1 mt-1"><Target className="w-3 h-3" /> Linked to {habit.goal.title}</span>}
                     </div>
                   </div>
@@ -197,7 +232,7 @@ const HabitsPage = () => {
 
       {/* Create / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
+        <DialogContent className="max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-black dark:text-white">
           <DialogHeader>
             <DialogTitle>{editingHabit ? "Edit habit" : "New habit"}</DialogTitle>
             <DialogDescription>
@@ -256,30 +291,87 @@ const HabitsPage = () => {
               </div>
             </div>
             
-            <div className="space-y-1.5">
-              <Label className="text-zinc-600 dark:text-zinc-300">Repeat on</Label>
-              <div className="flex gap-2">
-                {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+            <div className="space-y-2">
+              <Label className="text-zinc-600 dark:text-zinc-300">Schedule</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: "WEEKLY", label: "Repeat weekly" },
+                  { value: "ONE_TIME", label: "One-day task" },
+                ].map((option) => (
                   <button
-                    key={i}
+                    key={option.value}
                     type="button"
-                    onClick={() => {
-                      const freq = form.frequency || [0,1,2,3,4,5,6];
-                      if (freq.includes(i)) {
-                        if (freq.length > 1) {
-                          setForm({ ...form, frequency: freq.filter(d => d !== i) });
-                        }
-                      } else {
-                        setForm({ ...form, frequency: [...freq, i].sort() });
-                      }
-                    }}
-                    className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${form.frequency?.includes(i) ? "bg-emerald-500 text-white dark:text-zinc-950" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"}`}
+                    onClick={() => setForm({ ...form, scheduleType: option.value })}
+                    className={`rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+                      form.scheduleType === option.value
+                        ? "border-emerald-500/50 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300"
+                        : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-300 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-400 dark:hover:border-zinc-700"
+                    }`}
                   >
-                    {day}
+                    {option.label}
                   </button>
                 ))}
               </div>
             </div>
+
+            {form.scheduleType === "WEEKLY" ? (
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between gap-3">
+                  <Label className="text-zinc-600 dark:text-zinc-300">Repeat on</Label>
+                  <div className="flex gap-1">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setForm({ ...form, frequency: currentDayFrequency() })} className="h-7 px-2 text-xs text-zinc-600 dark:text-zinc-300">
+                      Today
+                    </Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setForm({ ...form, frequency: [0, 1, 2, 3, 4, 5, 6] })} className="h-7 px-2 text-xs text-zinc-600 dark:text-zinc-300">
+                      Daily
+                    </Button>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => {
+                        const freq = form.frequency || [0,1,2,3,4,5,6];
+                        if (freq.includes(i)) {
+                          if (freq.length > 1) {
+                            setForm({ ...form, frequency: freq.filter(d => d !== i) });
+                          }
+                        } else {
+                          setForm({ ...form, frequency: [...freq, i].sort() });
+                        }
+                      }}
+                      aria-pressed={form.frequency?.includes(i)}
+                      className={`w-9 h-9 rounded-full text-sm font-medium transition-colors ${form.frequency?.includes(i) ? "bg-emerald-500 text-white dark:text-zinc-950" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"}`}
+                    >
+                      {day}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <Label className="text-zinc-600 dark:text-zinc-300">Task date</Label>
+                  <Input
+                    type="date"
+                    value={form.oneTimeDate}
+                    onChange={(e) => setForm({ ...form, oneTimeDate: e.target.value })}
+                    className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white focus:border-emerald-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-zinc-600 dark:text-zinc-300">Time (optional)</Label>
+                  <Input
+                    type="time"
+                    value={form.scheduledTime}
+                    onChange={(e) => setForm({ ...form, scheduledTime: e.target.value })}
+                    className="bg-transparent dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-black dark:text-white focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+            )}
             {form.type !== "YES_NO" && (
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">

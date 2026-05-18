@@ -39,3 +39,16 @@ export const getPublicProfile = async (req, res, next) => {
     next(error);
   }
 };
+
+// DELETE /api/users/me
+export const deleteCurrentUser = async (req, res, next) => {
+  try {
+    await prisma.user.delete({
+      where: { id: req.user.id },
+    });
+
+    sendSuccess(res, null, "Account deleted.");
+  } catch (error) {
+    next(error);
+  }
+};

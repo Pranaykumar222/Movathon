@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useAuth } from "../context/AuthContext";
 import ShareModal from "../components/ShareModal";
 import OnboardingTutorial from "../components/OnboardingTutorial";
+import { getLocalDayOfWeek, toLocalDateString } from "../utils/date";
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -26,13 +27,14 @@ const DashboardPage = () => {
   const [entryForm, setEntryForm] = useState({ done: false, value: "", note: "" });
   const [loading, setLoading] = useState(true);
   const [shareOpen, setShareOpen] = useState(false);
-  const [today] = useState(() => new Date().toISOString().split("T")[0]);
+  const [today] = useState(() => toLocalDateString());
+  const [todayDayOfWeek] = useState(() => getLocalDayOfWeek());
 
   const fetchAll = useCallback(async () => {
     try {
       const [heatmapRes, summaryRes, habitsRes] = await Promise.all([
         getHeatmap(),
-        getSummary(),
+        getSummary({ date: today, dayOfWeek: todayDayOfWeek }),
         getHabits(),
       ]);
 
@@ -46,7 +48,7 @@ const DashboardPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [today]);
+  }, [today, todayDayOfWeek]);
 
   useEffect(() => {
     Promise.resolve().then(fetchAll);
@@ -74,7 +76,10 @@ const DashboardPage = () => {
 
     try {
       await markEntry(payload);
-      const [heatmapRes, summaryRes] = await Promise.all([getHeatmap(), getSummary()]);
+      const [heatmapRes, summaryRes] = await Promise.all([
+        getHeatmap(),
+        getSummary({ date: today, dayOfWeek: todayDayOfWeek }),
+      ]);
       setHeatmapData(heatmapRes.data.data.days);
       setSummary(summaryRes.data.data);
     } catch {
@@ -120,8 +125,7 @@ const DashboardPage = () => {
   const todaySummary = summary?.today || { completionScore: 0, completedHabits: 0, totalHabits: 0 };
   const streak = summary?.streak || { currentStreak: 0, longestStreak: 0, totalCompletedDays: 0 };
 
-  const todayDayOfWeek = new Date().getDay();
-  const todayHabits = habits.filter(h => h.frequency ? h.frequency.includes(todayDayOfWeek) : true);
+  const todayHabits = habits.filter(habit => isHabitScheduledForDate(habit, today, todayDayOfWeek));
 
   return (
     <AppLayout>
@@ -181,7 +185,7 @@ const DashboardPage = () => {
                             </div>
 
                             {/* Action Buttons */}
-                            <div className="flex w-full sm:w-auto shrink-0 items-center justify-end gap-2 mt-2 sm:mt-0">
+                            <div className="flex w-full sm:w-auto shrink-0 items-center justify-start sm:justify-end gap-2 mt-2 sm:mt-0">
                               {habit.type === "YES_NO" ? (
                                 <>
                                   {percentage >= 100 && (
@@ -194,7 +198,7 @@ const DashboardPage = () => {
                                   </button>
                                 </>
                               ) : (
-                                <div className="flex items-center gap-1.5 bg-zinc-100 dark:bg-zinc-950 rounded-lg p-1 border border-zinc-200 dark:border-zinc-800">
+                                <div className="flex min-w-0 items-center gap-1.5 bg-zinc-100 dark:bg-zinc-950 rounded-lg p-1 border border-zinc-200 dark:border-zinc-800">
                                   <Input
                                     type="number"
                                     min="0"
@@ -204,7 +208,7 @@ const DashboardPage = () => {
                                       ...prev,
                                       [habit.id]: { ...(prev[habit.id] || {}), value: e.target.value },
                                     }))}
-                                    className="w-16 h-8 bg-transparent border-0 text-black dark:text-white text-center px-1 focus:ring-0 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 text-sm"
+                                    className="w-20 sm:w-16 h-8 bg-transparent border-0 text-black dark:text-white text-center px-1 focus:ring-0 focus:outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600 text-sm"
                                   />
                                   <Button
                                     size="sm"
@@ -216,7 +220,7 @@ const DashboardPage = () => {
                                 </div>
                               )}
 
-                              <Button variant="ghost" size="icon" onClick={() => openEntryDialog(habit)} className="w-8 h-8 rounded-full text-zinc-600 hover:text-white hover:bg-zinc-800 ml-1">
+                              <Button variant="ghost" size="icon" onClick={() => openEntryDialog(habit)} aria-label={`Edit today's log for ${habit.title}`} className="w-8 h-8 rounded-full text-zinc-600 hover:text-zinc-950 hover:bg-zinc-200 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-800 ml-1">
                                 <Pencil className="w-3.5 h-3.5" />
                               </Button>
                             </div>
@@ -391,6 +395,11 @@ const buildTodayEntryMap = (habits, today) => {
   return todayMap;
 };
 
+const isHabitScheduledForDate = (habit, date, dayOfWeek) => {
+  if (habit.scheduleType === "ONE_TIME") return habit.oneTimeDate === date;
+  return habit.frequency ? habit.frequency.includes(dayOfWeek) : true;
+};
+
 const calculateCompletion = (habit, data) => {
   if (!habit) return 0;
   if (habit.type === "YES_NO") return data.done ? 100 : 0;
@@ -457,17 +466,6 @@ const formatHabitMeta = (habit, entry) => {
     return `${value} of ${habit.target || 0} ${habit.unit || "minutes"} today`;
   }
   return "One tap: done or not done";
-};
-
-const scoreBadgeClass = (percentage) => {
-  if (percentage >= 80) return "border-lime-400/30 text-lime-300 bg-lime-400/10";
-  if (percentage >= 40) return "border-amber-400/30 text-amber-300 bg-amber-400/10";
-  return "border-zinc-700 text-zinc-400";
-};
-
-const progressClass = (percentage) => {
-  const color = percentage >= 80 ? "bg-lime-400" : percentage >= 40 ? "bg-amber-400" : "bg-zinc-600";
-  return `h-full ${color}`;
 };
 
 const getGreeting = () => {

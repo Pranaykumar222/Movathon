@@ -20,7 +20,7 @@ const app = express();
 // ─── Security & Utility Middleware ───────────────────────────────────────────
 app.use(helmet()); // Secure HTTP headers
 app.use(cors({
-  origin: config.clientUrl,
+  origin: config.clientUrls,
   credentials: true,
 }));
 if (process.env.HTTP_LOGS === "true") {

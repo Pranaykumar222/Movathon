@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ const UserSearch = ({ className = "" }) => {
         placeholder="Search users..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="h-8 w-32 md:w-48 pl-8 bg-zinc-900/50 border-zinc-800 text-sm text-white placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-full transition-all focus:w-48 md:focus:w-64"
+        className="h-8 w-28 sm:w-36 md:w-48 pl-8 bg-white/80 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 text-sm text-zinc-900 dark:text-white placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-full transition-all focus:w-36 sm:focus:w-48 md:focus:w-64"
       />
     </form>
   );

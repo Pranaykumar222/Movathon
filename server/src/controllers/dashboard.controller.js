@@ -31,8 +31,9 @@ export const getStreak = async (req, res, next) => {
 // GET /api/dashboard/summary
 export const getSummary = async (req, res, next) => {
   try {
+    const { date, dayOfWeek } = req.query;
     const [today, streak, performance, goals] = await Promise.all([
-      getTodaySummary(req.user.id),
+      getTodaySummary(req.user.id, { date, dayOfWeek }),
       getStreakData(req.user.id),
       getHabitPerformance(req.user.id),
       getGoalProgress(req.user.id),

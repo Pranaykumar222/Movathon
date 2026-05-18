@@ -5,6 +5,8 @@ import { generateToken } from "../utils/jwt.js";
 import { sendSuccess } from "../utils/response.js";
 import { createError } from "../middleware/errorHandler.js";
 
+const PASSWORD_HASH_ROUNDS = 10;
+
 // POST /api/auth/register
 export const register = async (req, res, next) => {
   try {
@@ -19,7 +21,7 @@ export const register = async (req, res, next) => {
     }
 
     // Hash the password — NEVER store plain text passwords
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, PASSWORD_HASH_ROUNDS);
 
     const user = await prisma.user.create({
       data: { username, email, password: hashedPassword },
@@ -100,7 +102,7 @@ export const googleLogin = async (req, res, next) => {
 
     if (!user) {
       // Create a new user with a random placeholder password
-      const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), 12);
+      const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-10), PASSWORD_HASH_ROUNDS);
       user = await prisma.user.create({
         data: { username: name || email.split("@")[0], email, password: hashedPassword },
         select: { id: true, username: true, email: true, createdAt: true },

@@ -73,7 +73,16 @@ export const updateGoal = async (req, res, next) => {
     const goal = await prisma.goal.update({
       where: { id },
       data,
-      include: { habits: true },
+      include: {
+        habits: {
+          include: {
+            entries: {
+              orderBy: { date: "desc" },
+              take: 30,
+            },
+          },
+        },
+      },
     });
 
     sendSuccess(res, { goal }, "Goal updated.");
